@@ -6,6 +6,9 @@
 
     <!-- Mods -->
     <string name="mods_title">🧩 模组 (%d)</string>
+    <string name="mod_description">模组描述: </string>
+    <string name="mod_author">模组作者: </string>
+    <string name="mod_version">修改版: </string>
     <string name="mods_section_title">🧩 模组</string>
     <string name="external_mods_label">外部模组</string>
     <string name="inbuilt_mods_label">内置模组</string>
@@ -45,6 +48,7 @@
     <string name="local_custom">本地自定义</string>
 
     <string name="check_update">检查更新</string>
+    <string name="jsloader">JS 模块加载器: </string>
     <string name="version_prefix">版本号：</string>
 
     <!-- Permissions -->
@@ -265,6 +269,7 @@
     <string name="total_mods">模组总数：</string>
     <string name="enabled_mods">已启用：</string>
     <string name="add_mod">添加模组</string>
+    <string name="update_mods">更新模组</string>
 
     <!-- Mod Detail -->
     <string name="mod_detail_title">模组详情</string>

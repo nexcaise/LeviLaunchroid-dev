@@ -93,16 +93,6 @@
                 android:layout_weight="1" />
 
             <ImageButton
-                android:id="@+id/settings_button"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginHorizontal="5dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_settings"
-                app:tint="@color/on_surface" />
-
-            <ImageButton
                 android:id="@+id/language_button"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
@@ -166,6 +156,16 @@
                         android:indeterminate="true"
                         android:visibility="gone" />
                 </FrameLayout>
+                
+                <ImageButton
+                    android:id="@+id/settings_button"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginHorizontal="5dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_settings"
+                    app:tint="@color/on_surface" />
             </LinearLayout>
         </LinearLayout>
 

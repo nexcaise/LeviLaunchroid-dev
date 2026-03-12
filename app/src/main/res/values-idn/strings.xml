@@ -8,6 +8,9 @@
 
     <!-- Mods -->
     <string name="mods_title">🧩 Mods (%d)</string>
+    <string name="mod_description">Deskripsi Mod: </string>
+    <string name="mod_author">Pembuat Mod: </string>
+    <string name="mod_version">Versi Mod: </string>
     <string name="mods_section_title">🧩 Mods</string>
     <string name="external_mods_label">Mods Eksternal</string>
     <string name="inbuilt_mods_label">Mods Bawaan</string>
@@ -87,6 +90,7 @@
     <string name="unknown_sources_permission_message">Untuk menginstal atau memperbarui aplikasi ini, mohon berikan izin untuk menginstal aplikasi yang tidak dikenal. Klik "Izinkan" untuk membuka pengaturan sistem, aktifkan izin untuk aplikasi ini, dan kembali untuk melanjutkan.</string>
 
     <string name="check_update">Periksa pembaruan</string>
+    <string name="jsloader">Pemuat Mod JS: </string>
     <string name="version_prefix">Versi: </string>
 
     <string name="dialog_title_no_version">Tidak Ada Versi yang Dipilih</string>
@@ -271,6 +275,7 @@
     <string name="total_mods">Total Mods:</string>
     <string name="enabled_mods">Aktif:</string>
     <string name="add_mod">Tambahkan Mod</string>
+    <string name="update_mods">Perbarui Mod(s)</string>
 
     <!-- Mod Detail -->
     <string name="mod_detail_title">Detail Mod</string>

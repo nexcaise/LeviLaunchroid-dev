@@ -57,7 +57,7 @@ public class FileHandler {
         List<Uri> soUris = new ArrayList<>();
         for (Uri uri : fileUris) {
             String fileName = resolveFileName(uri);
-            if (fileName != null && fileName.endsWith(".so")) {
+            if (fileName != null && fileName.endsWith(".llmod")) {
                 soUris.add(uri);
             }
         }
@@ -94,7 +94,7 @@ public class FileHandler {
 
             for (Uri uri : fileUris) {
                 String fileName = resolveFileName(uri);
-                if (fileName == null || !fileName.endsWith(".so")) continue;
+                if (fileName == null || !fileName.endsWith(".llmod")) continue;
 
                 if (targetPath == null) {
                     return;
@@ -193,7 +193,7 @@ public class FileHandler {
     }
 
     private String resolveFileName(Uri uri) {
-        String defaultName = "unknown_" + System.currentTimeMillis() + ".so";
+        String defaultName = "unknown_" + System.currentTimeMillis() + ".llmod";
         Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
         if (cursor != null) {
             try {

@@ -87,6 +87,9 @@ public class SettingsActivity extends BaseActivity {
                 } catch (Throwable ignored) {}
             });
 
+            String buttontext = fs.getJSLoaderVersion() == "0.0.0" ? getString(R.string.install) : getString(R.string.check_update);
+            addActionButton(getString(R.string.jsloader) + fs.getJSLoaderVersion(),buttontext, v -> handleJSLoaderButtonClick());
+
             try {
                 String localVersion = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
                 addActionButton(
@@ -99,6 +102,10 @@ public class SettingsActivity extends BaseActivity {
         }));
 
         settingsRecyclerView.post(() -> DynamicAnim.staggerRecyclerChildren(settingsRecyclerView));
+    }
+
+    private void handleJSLoaderButtonClick() {
+        new GithubReleaseUpdater(this, "NexCaise", "JSLoader", false, permissionResultLauncher).checkUpdate();
     }
 
     private void handleUpdateButtonClick() {
@@ -115,7 +122,7 @@ public class SettingsActivity extends BaseActivity {
             updateButtonTapCount = 0;
             triggerEasterEgg();
         } else {
-            new GithubReleaseUpdater(this, "LiteLDev", "LeviLaunchroid", permissionResultLauncher).checkUpdate();
+            new GithubReleaseUpdater(this, "LiteLDev", "LeviLaunchroid", true, permissionResultLauncher).checkUpdate();
         }
     }
 

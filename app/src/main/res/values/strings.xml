@@ -8,6 +8,9 @@
 
     <!-- Mods -->
     <string name="mods_title">🧩 Mods (%d)</string>
+    <string name="mod_description">Mod Description: </string>
+    <string name="mod_author">Mod Author: </string>
+    <string name="mod_version">Mod Version: </string>
     <string name="mods_section_title">🧩 Mods</string>
     <string name="external_mods_label">External Mods</string>
     <string name="inbuilt_mods_label">Inbuilt Mods</string>
@@ -87,6 +90,7 @@
     <string name="unknown_sources_permission_message">To install or update this app, please grant permission to install unknown apps. Click "Grant" to open system settings, enable the permission for this app, and return to continue.</string>
 
     <string name="check_update">Check for updates</string>
+    <string name="jsloader">JSLoader: </string>
     <string name="version_prefix">Version: </string>
 
     <string name="dialog_title_no_version">No Version Selected</string>
@@ -274,6 +278,7 @@
     <string name="total_mods">Total Mods:</string>
     <string name="enabled_mods">Enabled:</string>
     <string name="add_mod">Add Mod</string>
+    <string name="update_mods">Update Mod(s)</string>
 
     <!-- Mod Detail -->
     <string name="mod_detail_title">Mod Details</string>

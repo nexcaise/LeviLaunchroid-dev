@@ -1,48 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
-    android:gravity="center_vertical">
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="10dp">
 
+    <!-- Drag handle -->
     <ImageView
         android:id="@+id/drag_handle"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
         android:layout_marginEnd="8dp"
         android:src="@drawable/ic_drag_handle"
         android:contentDescription="@string/drag_to_reorder"
         android:alpha="0.6"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:padding="4dp"/>
+        android:padding="3dp"
+        android:background="?attr/selectableItemBackgroundBorderless"/>
 
+    <!-- Mod icon -->
+    <ImageView
+        android:id="@+id/mod_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="10dp"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher"/>
+
+    <!-- Mod info -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical">
 
+        <!-- Name + version -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/mod_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Unknown"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/mod_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="unknown"
+                android:textSize="12sp"
+                android:layout_marginStart="6dp"
+                android:textColor="#888888"/>
+        </LinearLayout>
+
+        <!-- Description -->
         <TextView
-            android:id="@+id/mod_name"
+            android:id="@+id/mod_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Mod Name"
-            android:textSize="16sp"/>
+            android:text=""
+            android:textSize="12sp"
+            android:textColor="#777777"
+            android:maxLines="2"
+            android:ellipsize="end"/>
 
+        <!-- Load order -->
         <TextView
             android:id="@+id/mod_order"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Load order: 1"
-            android:textSize="12sp"
-            android:textColor="#666666"
-            android:visibility="gone"/>
+            android:text="Load order: -"
+            android:textSize="11sp"
+            android:textColor="#999999"
+            android:layout_marginTop="2dp"/>
     </LinearLayout>
 
+    <!-- Enable switch -->
     <Switch
         android:id="@+id/mod_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+
 </LinearLayout>

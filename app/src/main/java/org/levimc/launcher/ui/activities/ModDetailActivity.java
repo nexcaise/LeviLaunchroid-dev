@@ -4,33 +4,52 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageButton;
 import androidx.core.view.ViewCompat;
-import android.widget.Switch;
+
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import androidx.lifecycle.ViewModelProvider;
 
 import org.levimc.launcher.R;
 import org.levimc.launcher.core.mods.Mod;
+import org.levimc.launcher.core.mods.ModManager;
 import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
 import org.levimc.launcher.ui.views.MainViewModel;
 import org.levimc.launcher.ui.views.MainViewModelFactory;
 import org.levimc.launcher.ui.animation.DynamicAnim;
+
+import java.io.InputStream;
+
+import java.util.HashMap;
+import java.io.File;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import android.widget.ImageView;
 
 public class ModDetailActivity extends BaseActivity {
 
     private MainViewModel viewModel;
     private Mod currentMod;
     private int modPosition;
-    private String modFilenameArg;
     private TextView modNameText;
     private TextView modFilenameText;
     private TextView modOrderText;
-    private Switch modSwitch;
+    private TextView modVersionText;
+    private TextView modAuthorText;
+    private TextView modDescriptionText;
+
+    private String modFilenameArg;
     private View headerContainer;
     private View infoContainer;
     private View actionsContainer;
+    private ImageView icon;
+    
+    private final HashMap<String, Bitmap> iconCache = new HashMap<>();
+    private Bitmap defaultIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +84,12 @@ public class ModDetailActivity extends BaseActivity {
         modNameText = findViewById(R.id.mod_name_detail);
         modFilenameText = findViewById(R.id.mod_filename_detail);
         modOrderText = findViewById(R.id.mod_order_detail);
-        modSwitch = findViewById(R.id.mod_switch_detail);
+        
+        modVersionText = findViewById(R.id.mod_version_detail);
+        modAuthorText = findViewById(R.id.mod_author_detail);
+        modDescriptionText = findViewById(R.id.mod_description_detail);
+        
+        icon = findViewById(R.id.mod_icon);
         headerContainer = findViewById(R.id.mod_detail_header_container);
         infoContainer = findViewById(R.id.mod_detail_info_container);
         actionsContainer = findViewById(R.id.mod_detail_actions_container);
@@ -83,13 +107,6 @@ public class ModDetailActivity extends BaseActivity {
         deleteButton.setOnClickListener(v -> confirmDeleteMod());
         DynamicAnim.applyPressScale(deleteButton);
 
-        modSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (currentMod != null && isChecked != currentMod.isEnabled()) {
-                currentMod.setEnabled(isChecked);
-                viewModel.setModEnabled(currentMod.getFileName(), isChecked);
-                Toast.makeText(this, isChecked ? R.string.mod_enabled : R.string.mod_disabled, Toast.LENGTH_SHORT).show();
-            }
-        });
         DynamicAnim.applyPressScale(modSwitch);
     }
 
@@ -116,7 +133,12 @@ public class ModDetailActivity extends BaseActivity {
             modNameText.setText(mod.getDisplayName());
             modFilenameText.setText(getString(R.string.mod_filename_format, mod.getFileName()));
             modOrderText.setText(getString(R.string.mod_load_order, modPosition + 1));
-            modSwitch.setChecked(mod.isEnabled());
+            modDescriptionText.setText(getString(R.string.mod_description) + mod.getDescription());
+            modAuthorText.setText(getString(R.string.mod_author) + mod.getAuthor());
+            modVersionText.setText(getString(R.string.mod_version) + mod.getVersion());
+            if (icon != null) {
+                loadModIcon(icon.getContext(), mod, icon);
+            }
         }
     }
 
@@ -152,6 +174,70 @@ public class ModDetailActivity extends BaseActivity {
                     })
                     .setNegativeButton(getString(R.string.dialog_negative_cancel), null)
                     .show();
+        }
+    }
+
+    private Bitmap loadIconFromLLMod(Mod mod) {
+    
+        try {
+    
+            File modFile = new File(
+                ModManager.getInstance().getCurrentVersion().modsDir,
+                mod.getFileName()
+            );
+    
+            ZipFile zip = new ZipFile(modFile);
+    
+            ZipEntry entry = zip.getEntry(mod.getIconName());
+    
+            if (entry != null) {
+    
+                InputStream is = zip.getInputStream(entry);
+                Bitmap bmp = BitmapFactory.decodeStream(is);
+    
+                zip.close();
+                return bmp;
+            }
+    
+            zip.close();
+    
+        } catch (Exception ignored) {}
+    
+        return null;
+    }
+
+    private void loadModIcon(Context context, Mod mod, ImageView imageView) {
+
+        String key = mod.getFileName();
+
+        // cache hit
+        if (iconCache.containsKey(key)) {
+            imageView.setImageBitmap(iconCache.get(key));
+            return;
+        }
+
+        Bitmap iconBitmap = loadIconFromLLMod(mod);
+
+        // fallback ke default icon
+        if (iconBitmap == null) {
+
+            try {
+
+                if (defaultIcon == null) {
+                    InputStream is = context.getAssets().open("default_mod_icon.png");
+                    defaultIcon = BitmapFactory.decodeStream(is);
+                }
+
+                iconBitmap = defaultIcon;
+
+            } catch (Exception ignored) {}
+        }
+
+        if (iconBitmap != null) {
+            iconCache.put(key, iconBitmap);
+            imageView.setImageBitmap(iconBitmap);
+        } else {
+            imageView.setImageResource(R.mipmap.ic_launcher);
         }
     }
 

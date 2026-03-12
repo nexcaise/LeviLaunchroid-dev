@@ -155,7 +155,7 @@ public class MinecraftLauncher {
                     gameManager.loadLibrary("minecraftpe");
                     gameManager.loadLibrary("gxcore");
                 }
-                ModNativeLoader.loadEnabledSoMods(ModManager.getInstance(), context.getCacheDir());
+                ModManager.getInstance().loadMods(context.getCacheDir());
 
                 activity.runOnUiThread(() -> {
                     dismissLoading();

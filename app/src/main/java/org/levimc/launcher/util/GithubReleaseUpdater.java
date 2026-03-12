@@ -15,6 +15,7 @@ import androidx.core.content.FileProvider;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.levimc.launcher.R;
+import org.levimc.launcher.settings.FeatureSettings;
 import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
 
 import java.io.File;
@@ -31,18 +32,21 @@ import okhttp3.Response;
 public class GithubReleaseUpdater {
     private static final String TAG = "GithubReleaseUpdater";
     private static final String GITHUB_LATEST_API = "https://api.github.com/repos/%s/%s/releases/latest";
-    private static final String APK_ASSET_KEYWORD = ".apk";
+    private String kw = "";
     private static final String PREF_IGNORED_VERSION = "update_ignored_version";
     private final Activity activity;
     private final String owner;
     private final String repo;
+    private boolean isApk;
     private final OkHttpClient client = new OkHttpClient();
     private ActivityResultLauncher<Intent> permissionResultLauncher;
 
-    public GithubReleaseUpdater(Activity activity, String owner, String repo,
+    public GithubReleaseUpdater(Activity activity, String owner, String repo, boolean apk,
                                 ActivityResultLauncher<Intent> permissionResultLauncher) {
         this.activity = activity;
         this.owner = owner;
+        this.isApk = apk;
+        this.kw = apk ? ".apk" : ".so";
         this.repo = repo;
         this.permissionResultLauncher = permissionResultLauncher;
     }
@@ -82,16 +86,18 @@ public class GithubReleaseUpdater {
                     for (int i = 0; i < assets.length(); i++) {
                         JSONObject asset = assets.getJSONObject(i);
                         String name = asset.getString("name");
-                        if (name.endsWith(APK_ASSET_KEYWORD)) {
+                        if (name.endsWith(kw)) {
                             downloadUrl = asset.getString("browser_download_url");
                             break;
                         }
                     }
                     if (downloadUrl == null) {
-                        Log.e(TAG, "No APK asset found in release.");
+                        Log.e(TAG, "No asset found in release.");
                         return;
                     }
-                    String localVersion = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionName;
+                    
+                    FeatureSettings fs = FeatureSettings.getInstance();
+                    String localVersion = isApk ? activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionName : fs.getJSLoaderVersion();
                     if (compareVersion(latestVersion, localVersion) > 0) {
                         showUpdateDialog(latestVersion, downloadUrl);
                     } else {
@@ -125,13 +131,13 @@ public class GithubReleaseUpdater {
                     for (int i = 0; i < assets.length(); i++) {
                         JSONObject asset = assets.getJSONObject(i);
                         String name = asset.getString("name");
-                        if (name.endsWith(APK_ASSET_KEYWORD)) {
+                        if (name.endsWith(kw)) {
                             downloadUrl = asset.getString("browser_download_url");
                             break;
                         }
                     }
                     if (downloadUrl == null) {
-                        Log.e(TAG, "No APK asset found in release.");
+                        Log.e(TAG, "No asset found in release.");
                         return;
                     }
                     String localVersion = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionName;
@@ -154,7 +160,7 @@ public class GithubReleaseUpdater {
             CustomAlertDialog dialog = new CustomAlertDialog(activity);
             dialog.setTitleText(activity.getString(R.string.new_version_found, version));
             dialog.setMessage(activity.getString(R.string.update_question));
-            dialog.setPositiveButton(activity.getString(R.string.download_update), (d) -> downloadApk(url));
+            dialog.setPositiveButton(activity.getString(R.string.download_update), (d) -> download(url,version));
             dialog.setNegativeButton(activity.getString(R.string.cancel), null);
             dialog.show();
         });
@@ -165,7 +171,7 @@ public class GithubReleaseUpdater {
             CustomAlertDialog dialog = new CustomAlertDialog(activity);
             dialog.setTitleText(activity.getString(R.string.new_version_found, version));
             dialog.setMessage(activity.getString(R.string.update_question));
-            dialog.setPositiveButton(activity.getString(R.string.download_update), (d) -> downloadApk(url));
+            dialog.setPositiveButton(activity.getString(R.string.download_update), (d) -> download(url,version));
             dialog.setNegativeButton(activity.getString(R.string.cancel), null);
             dialog.setNeutralButton(activity.getString(R.string.ignore_this_version), (d) -> ignoreThisVersion(version));
             dialog.show();
@@ -178,7 +184,7 @@ public class GithubReleaseUpdater {
         activity.runOnUiThread(() -> Toast.makeText(activity, activity.getString(R.string.version_ignored), Toast.LENGTH_SHORT).show());
     }
 
-    private void downloadApk(String url) {
+    private void download(String url, String version) {
         activity.runOnUiThread(() -> Toast.makeText(activity, activity.getString(R.string.downloading_update), Toast.LENGTH_SHORT).show());
         Request request = new Request.Builder().url(url).build();
         client.newCall(request).enqueue(new Callback() {
@@ -198,7 +204,9 @@ public class GithubReleaseUpdater {
                     long downloaded = 0;
                     long total = response.body().contentLength();
                     is = response.body().byteStream();
-                    File apkFile = new File(activity.getExternalCacheDir(), "update_apk.apk");
+                    String fp = isApk ? "update_apk.apk" : "jsloader.so";
+                    File fd = isApk ? activity.getExternalCacheDir() : activity.getFilesDir();
+                    File apkFile = new File(fd, fp);
                     fos = new FileOutputStream(apkFile);
 
                     long lastToastTime = 0;
@@ -215,7 +223,11 @@ public class GithubReleaseUpdater {
                         }
                     }
                     fos.flush();
-                    installApk(apkFile);
+                    if(!isApk) {
+                        FeatureSettings fs = FeatureSettings.getInstance();
+                        fs.setJSLoaderVersion(version);
+                    }
+                    if(isApk) installApk(apkFile);
                 } catch (Exception e) {
                     activity.runOnUiThread(() ->
                             Toast.makeText(activity, activity.getString(R.string.update_failed, e.getMessage()), Toast.LENGTH_LONG).show());

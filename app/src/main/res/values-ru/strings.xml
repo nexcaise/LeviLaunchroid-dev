@@ -9,6 +9,9 @@
     <!-- Моды -->
     <string name="mods_title">🧩 Моды (%d)</string>
     <string name="mods_section_title">🧩 Моды</string>
+    <string name="mod_description">Описание мода: </string>
+    <string name="mod_author">Автор модификации: </string>
+    <string name="mod_version">Модифицированная версия: </string>
     <string name="external_mods_label">Внешние моды</string>
     <string name="inbuilt_mods_label">Встроенные моды</string>
     <string name="manage_mods">Управление модами</string>
@@ -87,6 +90,7 @@
     <string name="unknown_sources_permission_message">Чтобы установить или обновить это приложение, пожалуйста выдайте разрешение на установку неизвестных приложений. Нажмите "Выдать" чтобы открыть настройки системы, выдайте разрешение для этого приложения, и вернитесь чтобы продолжить.</string>
 
     <string name="check_update">Проверить обновления</string>
+    <string name="jsloader">Загрузчик модов на JS: </string>
     <string name="version_prefix">Версия: </string>
 
     <string name="dialog_title_no_version">Версия не выбрана</string>
@@ -266,6 +270,7 @@
     <string name="total_mods">Всего модов:</string>
     <string name="enabled_mods">Включено:</string>
     <string name="add_mod">Добавить мод</string>
+    <string name="update_mods">Обновить мод(ы)</string>
 
     <!-- Mod Detail -->
     <string name="mod_detail_title">Детали мода</string>

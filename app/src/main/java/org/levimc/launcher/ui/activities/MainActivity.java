@@ -121,7 +121,7 @@ import okhttp3.OkHttpClient;
         updateViewModelVersion();
         checkResourcepack();
         handleIncomingFiles();
-        new GithubReleaseUpdater(this, "LiteLDev", "LeviLaunchroid", permissionResultLauncher).checkUpdateOnLaunch();
+        new GithubReleaseUpdater(this, "LiteLDev", "LeviLaunchroid", true, permissionResultLauncher).checkUpdateOnLaunch();
         repairNeededVersions();
         requestBasicPermissions();
         showEulaIfNeeded();

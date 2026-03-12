@@ -99,6 +99,21 @@
                 android:layout_weight="1" />
 
             <Button
+                android:id="@+id/update_mods_fullscreen_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="0dp"
+                android:backgroundTint="@color/primary"
+                android:text="@string/update_mods"
+                android:textColor="@color/on_primary"
+                android:paddingHorizontal="12dp"
+                android:layout_marginStart="8dp"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:fontFamily="@font/misans" />
+
+            <Button
                 android:id="@+id/inbuilt_mods_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

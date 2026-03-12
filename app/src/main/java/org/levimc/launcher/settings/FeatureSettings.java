@@ -9,6 +9,7 @@ public class FeatureSettings {
     private boolean launcherManagedMcLoginEnabled = false;
     private boolean logcatOverlayEnabled = false;
     private boolean memoryEditorEnabled = false;
+    private String jsLoaderVersion = "0.0.0";
 
     public enum StorageType {
         INTERNAL,
@@ -45,6 +46,9 @@ public class FeatureSettings {
 
     public boolean isMemoryEditorEnabled() { return memoryEditorEnabled; }
     public void setMemoryEditorEnabled(boolean enabled) { this.memoryEditorEnabled = enabled; autoSave(); }
+    
+    public String getJSLoaderVersion() { return jsLoaderVersion; }
+    public void setJSLoaderVersion(String str) { this.jsLoaderVersion = str; autoSave(); }
 
     private void autoSave() {
         if (appContext != null) {

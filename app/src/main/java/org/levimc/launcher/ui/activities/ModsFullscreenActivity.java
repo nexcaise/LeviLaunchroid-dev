@@ -31,6 +31,7 @@ import org.levimc.launcher.ui.views.MainViewModel;
 import org.levimc.launcher.ui.views.MainViewModelFactory;
 import java.util.ArrayList;
 import java.util.List;
+import org.levimc.launcher.core.mods.ModManager;
 
 public class ModsFullscreenActivity extends BaseActivity {
 
@@ -47,6 +48,7 @@ public class ModsFullscreenActivity extends BaseActivity {
     private FileHandler fileHandler;
     private InbuiltModManager inbuiltModManager;
     private int lastModsCount = -1;
+    private Button updateModsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +100,13 @@ public class ModsFullscreenActivity extends BaseActivity {
             startFilePicker();
         });
         DynamicAnim.applyPressScale(addModButton);
+
+        updateModsButton = findViewById(R.id.update_mods_fullscreen_button);
+        
+        updateModsButton.setOnClickListener(v -> {
+            ModManager.getInstance().updateMods();
+        });
+        DynamicAnim.applyPressScale(updateModsButton);
 
         Button inbuiltModsButton = findViewById(R.id.inbuilt_mods_button);
         inbuiltModsButton.setOnClickListener(v -> {
@@ -234,6 +243,8 @@ public class ModsFullscreenActivity extends BaseActivity {
     }
 
     private void updateModsUI(List<Mod> mods) {
+        boolean hasSo = ModManager.getInstance().isThereSoMods();
+        updateModsButton.setVisibility(hasSo ? View.VISIBLE : View.GONE);
         if (modsAdapter != null) {
             modsAdapter.updateMods(mods);
             updateModsCount();

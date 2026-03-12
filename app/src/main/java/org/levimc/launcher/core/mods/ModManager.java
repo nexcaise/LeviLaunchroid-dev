@@ -5,15 +5,21 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.levimc.launcher.core.versions.GameVersion;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.levimc.launcher.util.LLModBuilder;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.io.InputStreamReader;
 
 public class ModManager {
     private static volatile ModManager instance;
@@ -41,6 +47,41 @@ public class ModManager {
         return result;
     }
 
+    public static native void nativeLoadMod(String path);
+
+    private void loadModMetadata(Mod mod) {
+    
+        try {
+    
+            File modFile = new File(modsDir, mod.getFileName());
+            ZipFile zip = new ZipFile(modFile);
+    
+            ZipEntry entry = zip.getEntry("manifest.json");
+    
+            if (entry == null) {
+                zip.close();
+                return;
+            }
+    
+            InputStreamReader reader = new InputStreamReader(zip.getInputStream(entry));
+    
+            Map<String, Object> json = gson.fromJson(reader, Map.class);
+    
+            String version = (String) json.get("version");
+            String description = (String) json.get("description");
+            String icon = (String) json.get("icon");
+            String author = (String) json.get("author");
+            String jsentry = (String) json.get("entry");
+            boolean isJS = (jsentry != null && jsentry != "");
+
+            mod.setMetadata(version, description, icon, author, isJS);
+            if(isJS) mod.setEntry(jsentry);
+    
+            zip.close();
+    
+        } catch (Exception ignored) {}
+    }
+
     public synchronized void setCurrentVersion(GameVersion version) {
         if (Objects.equals(currentVersion, version)) return;
         stopFileObserver();
@@ -65,11 +106,29 @@ public class ModManager {
         return currentVersion;
     }
 
+    public void updateMods() {
+        File[] files = modsDir.listFiles((dir, name) -> name.endsWith(".so"));
+        if (files != null) {
+            for (File file : files) {
+                String newPath = file.getAbsolutePath().replace(".so", ".llmod");
+                File nf = new File(newPath);
+                LLModBuilder.buildLLMod(file,nf);
+            }
+        }
+        refreshMods();
+    }
+
+   public boolean isThereSoMods() {
+        File[] files = modsDir.listFiles((dir, name) -> name.endsWith(".so"));
+        if (files != null) return true;
+        return false;
+    }
+
     public List<Mod> getMods() {
         if (modsDir == null) return new ArrayList<>();
 
         List<Mod> mods = new ArrayList<>();
-        File[] files = modsDir.listFiles((dir, name) -> name.endsWith(".so"));
+        File[] files = modsDir.listFiles((dir, name) -> name.endsWith(".llmod"));
         boolean changed = false;
 
         // Add new mods
@@ -96,7 +155,9 @@ public class ModManager {
 
         for (int i = 0; i < modOrder.size(); i++) {
             String fileName = modOrder.get(i);
-            mods.add(new Mod(fileName, enabledMap.getOrDefault(fileName, true), i));
+            Mod mod = new Mod(fileName, enabledMap.getOrDefault(fileName, true), i);
+            loadModMetadata(mod);
+            mods.add(mod);
         }
 
         if (changed) saveConfig();
@@ -105,7 +166,7 @@ public class ModManager {
 
     public synchronized void setModEnabled(String fileName, boolean enabled) {
         if (modsDir == null) return;
-        if (!fileName.endsWith(".so")) fileName += ".so";
+        if (!fileName.endsWith(".llmod")) fileName += ".llmod";
         if (enabledMap.containsKey(fileName)) {
             enabledMap.put(fileName, enabled);
             saveConfig();
@@ -144,7 +205,7 @@ public class ModManager {
     }
 
     private void updateConfigFromDirectory() {
-        File[] files = modsDir.listFiles((dir, name) -> name.endsWith(".so"));
+        File[] files = modsDir.listFiles((dir, name) -> name.endsWith(".llmod"));
         if (files != null) {
             for (File file : files) {
                 String fileName = file.getName();
@@ -192,7 +253,7 @@ public class ModManager {
 
     public synchronized void deleteMod(String fileName) {
         if (modsDir == null) return;
-        if (!fileName.endsWith(".so")) fileName += ".so";
+        if (!fileName.endsWith(".llmod")) fileName += ".llmod";
 
         File modFile = new File(modsDir, fileName);
         if (modFile.exists() && modFile.delete()) {
@@ -224,5 +285,59 @@ public class ModManager {
 
     public synchronized void refreshMods() {
         notifyModsChanged();
+    }
+    
+    public void loadMods(File cacheDir) {
+        List<Mod> mods = getMods();
+        for (Mod mod : mods) {
+            if (!mod.isEnabled()) continue;
+            File src = new File(currentVersion.modsDir, mod.getFileName());
+            File dir = new File(cacheDir, "mods/" + mod.getDisplayName());
+            if (!dir.exists()) dir.mkdirs();
+            try {
+                copyFromArchive(src,"libs", dir);
+                File[] files = dir.listFiles((folder, name) -> name.endsWith(".so"));
+                if (files != null) {
+                    for (File file : files) {
+                        String path = file.getAbsolutePath();
+                        nativeLoadMod(path);
+                        Log.i(TAG, "Loaded native mod from: " + mod.getDisplayName() + ", path: " + path);
+                    }
+                } else {
+                    dir.delete();
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Can't load " + src.getName() + ": " + e.getMessage());
+            }
+        }
+    }
+
+    private static void copyFromArchive(File archive, String entryPath, File dest) throws IOException {
+        try (ZipInputStream zis = new ZipInputStream(new FileInputStream(archive))) {
+            ZipEntry entry;
+
+            while ((entry = zis.getNextEntry()) != null) {
+                if (!entry.getName().startsWith(entryPath)) continue;
+
+                File outFile = new File(dest, entry.getName().substring(entryPath.length()));
+
+                if (entry.isDirectory()) {
+                    outFile.mkdirs();
+                } else {
+                    File parent = outFile.getParentFile();
+                    if (parent != null) parent.mkdirs();
+
+                    try (FileOutputStream fos = new FileOutputStream(outFile)) {
+                        byte[] buffer = new byte[8192];
+                        int len;
+                        while ((len = zis.read(buffer)) > 0) {
+                            fos.write(buffer, 0, len);
+                        }
+                    }
+                }
+
+                zis.closeEntry();
+            }
+        }
     }
 }
