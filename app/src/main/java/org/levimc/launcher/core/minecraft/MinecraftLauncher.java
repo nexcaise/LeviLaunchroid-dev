@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.widget.Toast;
 
+import org.levimc.launcher.util.LLModBuilder;
 import org.levimc.launcher.core.mods.ModManager;
 import org.levimc.launcher.core.versions.GameVersion;
 import org.levimc.launcher.settings.FeatureSettings;
@@ -155,6 +156,10 @@ public class MinecraftLauncher {
                     gameManager.loadLibrary("gxcore");
                 }
                 ModManager.getInstance().loadMods(context.getCacheDir());
+                File jsLoaderFile = new File(context.getFilesDir(), "jsloader.so");
+                if(LLModBuilder.hasJSLoader(jsLoaderFile)) {
+                    gameManager.loadLibrary(jsLoaderFile.getAbsolutePath());
+                }
 
                 activity.runOnUiThread(() -> {
                     dismissLoading();

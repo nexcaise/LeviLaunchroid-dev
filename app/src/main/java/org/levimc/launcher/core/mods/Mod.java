@@ -6,7 +6,7 @@ public class Mod {
     private boolean enabled;
     private int order;
 
-    private String version = "1.0";
+    private String version = "0.0.0";
     private String description = "";
     private String iconName;
     private String author = "Unknown";
@@ -68,10 +68,17 @@ public class Mod {
     }
 
     public void setMetadata(String version, String description, String iconName, String author, boolean ij) {
-        this.version = version;
-        this.description = description;
+        if(version != null || version != "null") {
+            this.version = version;
+        }
+        if(description != null || description != "null") {
+            this.description = description;
+        }
+        if(author != null || author != "null") {
+            this.author = author;
+        }
+        
         this.iconName = iconName;
-        this.author = author;
         this.isJS = ij;
     }
     

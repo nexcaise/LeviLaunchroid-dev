@@ -243,7 +243,8 @@ public class ModsFullscreenActivity extends BaseActivity {
     }
 
     private void updateModsUI(List<Mod> mods) {
-        boolean hasSo = ModManager.getInstance().isThereSoMods();
+        boolean hasSo = mods.stream()
+        .anyMatch(mod -> mod.getFileName().endsWith(".so"));
         updateModsButton.setVisibility(hasSo ? View.VISIBLE : View.GONE);
         if (modsAdapter != null) {
             modsAdapter.updateMods(mods);
