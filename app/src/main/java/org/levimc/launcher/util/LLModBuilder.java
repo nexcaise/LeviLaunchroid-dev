@@ -12,7 +12,7 @@ public class LLModBuilder {
     private static final String TAG = "LLModBuilder";
     
     public static boolean hasJSLoader(File dir) {
-        File file = new File(dir, "jsloader.so");
+        File file = new File(dir, "libjsLoader.so");
         if(!(dir.exists() || file.exists())) return false;
         return true;
     }
