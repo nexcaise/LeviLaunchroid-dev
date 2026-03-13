@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.levimc.launcher.core.versions.GameVersion;
 
+import android.util.Log;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -17,8 +18,7 @@ import org.levimc.launcher.util.LLModBuilder;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.zip.*;
 import java.io.InputStreamReader;
 
 public class ModManager {
@@ -31,6 +31,7 @@ public class ModManager {
     private GameVersion currentVersion;
     private final MutableLiveData<Void> modsChangedLiveData = new MutableLiveData<>();
     private final Gson gson = new Gson();
+    private final String TAG = "ModManager"
 
     private ModManager() {}
 

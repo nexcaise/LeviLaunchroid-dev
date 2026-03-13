@@ -106,8 +106,6 @@ public class ModDetailActivity extends BaseActivity {
         Button deleteButton = findViewById(R.id.delete_mod_button);
         deleteButton.setOnClickListener(v -> confirmDeleteMod());
         DynamicAnim.applyPressScale(deleteButton);
-
-        DynamicAnim.applyPressScale(modSwitch);
     }
 
     private void loadModDetails(String modFilename) {
