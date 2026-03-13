@@ -7,9 +7,9 @@ public class Mod {
     private int order;
 
     private String version = "0.0.0";
-    private String description = "";
+    private String description = "-";
     private String iconName = "icon.png";
-    private String author = "Unknown";
+    private String author = "-";
     private String entry = "scripts/index.js";
     private boolean isJS = false;
 

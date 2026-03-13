@@ -114,6 +114,7 @@ public class ModManager {
                 String newPath = file.getAbsolutePath().replace(".so", ".llmod");
                 File nf = new File(newPath);
                 LLModBuilder.buildLLMod(file,nf);
+                file.delete();
             }
         }
         refreshMods();
@@ -254,7 +255,7 @@ public class ModManager {
 
     public synchronized void deleteMod(String fileName) {
         if (modsDir == null) return;
-        if (!fileName.endsWith(".llmod")) fileName += ".llmod";
+        if (!fileName.endsWith(".llmod") && !fileName.endsWith(".so")) fileName += ".llmod";
 
         File modFile = new File(modsDir, fileName);
         if (modFile.exists() && modFile.delete()) {
