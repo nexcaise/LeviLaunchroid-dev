@@ -31,7 +31,7 @@ public class ModManager {
     private GameVersion currentVersion;
     private final MutableLiveData<Void> modsChangedLiveData = new MutableLiveData<>();
     private final Gson gson = new Gson();
-    private final String TAG = "ModManager"
+    private final String TAG = "ModManager";
 
     private ModManager() {}
 
