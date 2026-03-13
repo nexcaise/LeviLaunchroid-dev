@@ -73,7 +73,7 @@ public class ModManager {
             String icon = (String) json.get("icon");
             String author = (String) json.get("author");
             String jsentry = (String) json.get("entry");
-            boolean isJS = (jsentry != null && jsentry != "");
+            boolean isJS = (jsentry != null && !jsentry.equals(""));
 
             mod.setMetadata(version, description, icon, author, isJS);
             if(isJS) mod.setEntry(jsentry);
@@ -126,7 +126,7 @@ public class ModManager {
         return false;
     }
 
-    public List<Mod> getMods() {
+    public synchronized List<Mod> getMods() {
         if (modsDir == null) return new ArrayList<>();
 
         List<Mod> mods = new ArrayList<>();
@@ -146,14 +146,17 @@ public class ModManager {
         }
 
         // Remove deleted mods
-        modOrder.removeIf(fileName -> {
+        Iterator<String> it = modOrder.iterator();
+
+        while (it.hasNext()) {
+            String fileName = it.next();
             File file = new File(modsDir, fileName);
+        
             if (!file.exists()) {
+                it.remove();
                 enabledMap.remove(fileName);
-                return true;
             }
-            return false;
-        });
+        }
 
         for (int i = 0; i < modOrder.size(); i++) {
             String fileName = modOrder.get(i);

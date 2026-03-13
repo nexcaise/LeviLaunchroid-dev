@@ -81,6 +81,12 @@ public class MinecraftLauncher {
                 );
                 return;
             }
+            if (ModManager.getInstance().isThereSoMods()) {
+                Log.e(TAG, "Deprecated Mod(s) Found, please update the Mod(s)");
+                showLaunchErrorOnUi("Deprecated Mod(s) .so Found, please update the Mod(s) to .llmod, on The Mods Section");
+                return;
+            }
+            
             activity.runOnUiThread(() -> {
                 dismissLoading();
                 loadingDialog = new LoadingDialog(activity);
