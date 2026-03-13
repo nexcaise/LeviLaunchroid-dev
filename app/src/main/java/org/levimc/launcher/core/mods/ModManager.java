@@ -122,8 +122,12 @@ public class ModManager {
     }
 
    public boolean isThereSoMods() {
-        File[] files = modsDir.listFiles((dir, name) -> name.endsWith(".so"));
-        if (files != null) return true;
+        List<Mod> mods = getMods();
+        if (mods == null) return false;
+    
+        for (Mod mod : mods) {
+            if (mod.isOldMod()) return true;
+        }
         return false;
     }
 
