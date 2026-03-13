@@ -8,10 +8,10 @@ public class Mod {
 
     private String version = "0.0.0";
     private String description = "";
-    private String iconName;
+    private String iconName = "icon.png";
     private String author = "Unknown";
-    private String entry = "";
-    private boolean isJS;
+    private String entry = "scripts/index.js";
+    private boolean isJS = false;
 
     public Mod(String fileName, boolean enabled, int order) {
         this.fileName = fileName;
@@ -29,6 +29,10 @@ public class Mod {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+    
+    public boolean isOldMod() {
+        return getFileName().endsWith(".so");
     }
 
     public int getOrder() {
@@ -68,13 +72,13 @@ public class Mod {
     }
 
     public void setMetadata(String version, String description, String iconName, String author, boolean ij) {
-        if(version != null || version != "null") {
+        if(version != null || version != "null" || version != "") {
             this.version = version;
         }
-        if(description != null || description != "null") {
+        if(description != null || description != "null" || description != "") {
             this.description = description;
         }
-        if(author != null || author != "null") {
+        if(author != null || author != "null" || author != "") {
             this.author = author;
         }
         

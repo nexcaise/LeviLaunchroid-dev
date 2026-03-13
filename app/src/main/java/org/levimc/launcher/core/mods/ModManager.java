@@ -129,7 +129,7 @@ public class ModManager {
         if (modsDir == null) return new ArrayList<>();
 
         List<Mod> mods = new ArrayList<>();
-        File[] files = modsDir.listFiles((dir, name) -> name.endsWith(".llmod"));
+        File[] files = modsDir.listFiles((dir, name) -> (name.endsWith(".llmod") || name.endsWith(".so")));
         boolean changed = false;
 
         // Add new mods
@@ -167,7 +167,7 @@ public class ModManager {
 
     public synchronized void setModEnabled(String fileName, boolean enabled) {
         if (modsDir == null) return;
-        if (!fileName.endsWith(".llmod")) fileName += ".llmod";
+        if (!fileName.endsWith(".llmod") && !fileName.endsWith(".so")) fileName += ".llmod";
         if (enabledMap.containsKey(fileName)) {
             enabledMap.put(fileName, enabled);
             saveConfig();
@@ -206,7 +206,7 @@ public class ModManager {
     }
 
     private void updateConfigFromDirectory() {
-        File[] files = modsDir.listFiles((dir, name) -> name.endsWith(".llmod"));
+        File[] files = modsDir.listFiles((dir, name) -> (name.endsWith(".llmod") || name.endsWith(".so")));
         if (files != null) {
             for (File file : files) {
                 String fileName = file.getName();
@@ -291,7 +291,7 @@ public class ModManager {
     public void loadMods(File cacheDir) {
         List<Mod> mods = getMods();
         for (Mod mod : mods) {
-            if (!mod.isEnabled()) continue;
+            if (!mod.isEnabled() || mod.isOldMod()) continue;
             File src = new File(currentVersion.modsDir, mod.getFileName());
             File dir = new File(cacheDir, "mods/" + mod.getDisplayName());
             if (!dir.exists()) dir.mkdirs();
