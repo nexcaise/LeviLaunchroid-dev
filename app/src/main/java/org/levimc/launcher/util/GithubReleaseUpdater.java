@@ -205,7 +205,7 @@ public class GithubReleaseUpdater {
                     long total = response.body().contentLength();
                     is = response.body().byteStream();
                     File outFile = isApk ? new File(activity.getExternalCacheDir(), "update_apk.apk") : new File(activity.getFilesDir(), "libjsLoader.so");
-                    fos = new FileOutputStream(apkFile);
+                    fos = new FileOutputStream(outFile);
 
                     long lastToastTime = 0;
                     while ((len = is.read(buf)) > 0) {
@@ -225,7 +225,7 @@ public class GithubReleaseUpdater {
                         FeatureSettings fs = FeatureSettings.getInstance();
                         fs.setJSLoaderVersion(version);
                     }
-                    if(isApk) installApk(apkFile);
+                    if(isApk) installApk(outFile);
                 } catch (Exception e) {
                     activity.runOnUiThread(() ->
                             Toast.makeText(activity, activity.getString(R.string.update_failed, e.getMessage()), Toast.LENGTH_LONG).show());
