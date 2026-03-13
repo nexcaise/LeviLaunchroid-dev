@@ -9,7 +9,6 @@ import android.os.Build;
 import android.widget.Toast;
 
 import org.levimc.launcher.core.mods.ModManager;
-import org.levimc.launcher.core.mods.ModNativeLoader;
 import org.levimc.launcher.core.versions.GameVersion;
 import org.levimc.launcher.settings.FeatureSettings;
 import org.levimc.launcher.ui.dialogs.LoadingDialog;
