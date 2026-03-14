@@ -204,7 +204,7 @@ public class GithubReleaseUpdater {
                     long downloaded = 0;
                     long total = response.body().contentLength();
                     is = response.body().byteStream();
-                    File outFile = isApk ? new File(activity.getExternalCacheDir(), "update_apk.apk") : new File(activity.getFilesDir(), "libjsLoader.so");
+                    File outFile = isApk ? new File(activity.getExternalCacheDir(), "update_apk.apk") : new File(activity.getCacheDir(), "libjsLoader.so");
                     fos = new FileOutputStream(outFile);
 
                     long lastToastTime = 0;

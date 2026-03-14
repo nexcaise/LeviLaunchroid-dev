@@ -49,7 +49,7 @@ public class ModManager {
         return result;
     }
 
-    public static native void nativeLoadMod(String path);
+    public static native void nativeLoadMod(String path, Mod mod);
 
     private void loadModMetadata(Mod mod) {
     
@@ -310,7 +310,7 @@ public class ModManager {
                 if (files != null) {
                     for (File file : files) {
                         String path = file.getAbsolutePath();
-                        nativeLoadMod(path);
+                        nativeLoadMod(path, mod);
                         Log.i(TAG, "Loaded native mod from: " + mod.getDisplayName() + ", path: " + path);
                     }
                 } else {

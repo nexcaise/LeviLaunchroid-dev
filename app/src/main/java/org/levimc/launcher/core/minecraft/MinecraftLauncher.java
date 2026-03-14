@@ -162,8 +162,8 @@ public class MinecraftLauncher {
                     gameManager.loadLibrary("gxcore");
                 }
                 ModManager.getInstance().loadMods(context.getCacheDir());
-                File jsLoaderFile = new File(context.getFilesDir(), "libjsLoader.so");
-                if(LLModBuilder.hasJSLoader(context.getFilesDir())) {
+                File jsLoaderFile = new File(context.getCacheDir(), "libjsLoader.so");
+                if(LLModBuilder.hasJSLoader(context.getCacheDir())) {
                     gameManager.loadLibrary(jsLoaderFile.getAbsolutePath());
                 }
 
