@@ -255,6 +255,19 @@ class GamePackageManager private constructor(private val context: Context, priva
         return assets
     }
 
+    public fun addAssetPath(assets: AssetManager, path: String): Boolean {
+        val addAssetPathMethod = AssetManager::class.java.getMethod("addAssetPath", String::class.java)
+        try {
+            addAssetPathMethod.invoke(assets, path)
+            Log.d(TAG, "Added asset path: $path")
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to add asset path $path: ${e.message}")
+            return false;
+        }
+        
+        return true;
+    }
+
     private fun setupSecurityProvider() {
         Log.d(TAG, "Setting up security provider...")
         try {

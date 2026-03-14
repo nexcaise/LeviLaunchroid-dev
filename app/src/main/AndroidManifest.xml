@@ -327,6 +327,17 @@
      </intent-filter>
      <grant-uri-permission android:pathPrefix="/" />
     </provider>
+    <provider
+     android:name=".ui.activities.LeviInternalDocumentsProvider"
+     android:authorities="org.levimc.launcher.documents.internal"
+     android:exported="true"
+     android:grantUriPermissions="true"
+     android:permission="android.permission.MANAGE_DOCUMENTS">
+     <intent-filter>
+     <action android:name="android.content.action.DOCUMENTS_PROVIDER" />
+     </intent-filter>
+     <grant-uri-permission android:pathPrefix="/" />
+    </provider>
 
     </application>
 

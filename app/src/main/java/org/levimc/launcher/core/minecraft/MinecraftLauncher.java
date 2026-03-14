@@ -164,7 +164,7 @@ public class MinecraftLauncher {
                 ModManager.getInstance().loadMods(context.getCacheDir());
                 File jsLoaderFile = new File(context.getCacheDir(), "libjsLoader.so");
                 if(LLModBuilder.hasJSLoader(context.getCacheDir())) {
-                    gameManager.loadLibrary(jsLoaderFile.getAbsolutePath());
+                    System.load(jsLoaderFile.getAbsolutePath());
                 }
 
                 activity.runOnUiThread(() -> {
