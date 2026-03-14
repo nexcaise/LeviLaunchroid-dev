@@ -31,7 +31,7 @@ namespace {
         }
     };
 
-    pl::log::Logger logger("pairipcore");
+    pl::log::Logger pairiplogger("pairipcore");
     static Data* defaultData = new Data{};
 }
 
@@ -72,7 +72,7 @@ namespace core {
         }();
 
         if (code_addr == 0) {
-            logger.error("Failed to resolve timer signature.");
+            pairiplogger.error("Failed to resolve timer signature.");
             return;
         }
 
@@ -106,7 +106,7 @@ namespace core {
         }();
 
         if (code_addr == 0) {
-            logger.error("Failed to resolve Minecraft logo signature.");
+            pairiplogger.error("Failed to resolve Minecraft logo signature.");
             return;
         }
 
@@ -129,7 +129,7 @@ namespace core {
         const uintptr_t gMinecraftLogoImage_addr = page_base + offset;
 
         if (gMinecraftLogoImage_addr == 0) {
-            logger.error("Invalid image data or address.");
+            pairiplogger.error("Invalid image data or address.");
             return;
         }
 
