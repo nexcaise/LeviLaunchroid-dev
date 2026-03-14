@@ -2,7 +2,7 @@
 #include "ArmDecode.h"
 #include "pl/Logger.h"
 #include "pl/Signature.h"
-#include "Hook.h"
+#include "pl/api/memory/Hook.h"
 #include "minecraftTitle.h"
 #include <span>
 #include <array>
@@ -35,7 +35,7 @@ namespace {
     static Data* defaultData = new Data{};
 }
 
-SKY_STATIC_HOOK(
+LL_STATIC_HOOK(
         MyHook1,
         memory::HookPriority::Normal,
         "_ZN9Microsoft12Applications6Events19TelemetrySystemBase5startEv",
@@ -45,7 +45,7 @@ SKY_STATIC_HOOK(
 }
 
 uintptr_t MyHook2Ptr = 0;
-SKY_STATIC_HOOK(
+LL_STATIC_HOOK(
         MyHook2,
         memory::HookPriority::Normal,
         MyHook2Ptr,
